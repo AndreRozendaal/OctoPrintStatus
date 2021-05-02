@@ -21,11 +21,12 @@ class Connection:
             return json.loads(response)
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
+
     def get_printer(self):
-        pass
+        return self.get("/printer")
 
     def get_job(self):
-        pass
+        return self.get("/job")
 
     def get_all(self):
         data = {
@@ -34,8 +35,9 @@ class Connection:
             "printer status": "N/A",
             "elapsed_time": "N/A"
         }
+        #printer = self.get_printer()
+        #job = self.get_job()
         printer = self.get("/printer")
-        # printer = self.get("/job")
 
         if printer.get("temperature"):
             temperature = printer["temperature"]
