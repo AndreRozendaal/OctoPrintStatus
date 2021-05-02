@@ -21,6 +21,11 @@ class Connection:
             return json.loads(response)
         except requests.exceptions.RequestException as e:
             raise SystemExit(e)
+    def get_printer(self):
+        pass
+
+    def get_job(self):
+        pass
 
     def get_all(self):
         data = {
