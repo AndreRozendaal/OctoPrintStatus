@@ -32,17 +32,28 @@ class Connection:
         data = {
             "temp_bed": "N/A",
             "temp_nozzle": "N/A",
-            "printer status": "N/A",
+            "printer_status": "N/A",
             "elapsed_time": "N/A"
         }
-        #printer = self.get_printer()
-        #job = self.get_job()
-        printer = self.get("/printer")
-
-        if printer.get("temperature"):
-            temperature = printer["temperature"]
-            if temperature.get("bed"):
-                data["temp_bed"] = printer["temperature"]["bed"]["actual"]
-            if temperature.get("tool0"):
-                data["temp_nozzle"] = printer["temperature"]["tool0"]["actual"]
+        printer = self.get_printer()
+        # job = self.get_job()
+        # print(job)
+        # printer = self.get("/printer")
+        if printer.get("error"):
+            data["printer_status"] = "Printer not operational"
+        else:
+            if printer.get("temperature"):
+                temperature = printer["temperature"]
+                if temperature.get("bed"):
+                    data["temp_bed"] = printer["temperature"]["bed"]["actual"]
+                if temperature.get("tool0"):
+                    data["temp_nozzle"] = printer["temperature"]["tool0"]["actual"]
+            if printer.get("state"):
+                state = printer["state"]
+                if state["flags"]["operational"] == "true" and state["flags"]["printing"] == "false":
+                    data["printer_status"] = "Printer Operational"
+                elif state["flags"]["operational"] == "true" and state["flags"]["printing"] == "true":
+                    data["printer_status"] = "Printing"
+                else:
+                    data["printer_status"] = "Printer not operational"
         return data
