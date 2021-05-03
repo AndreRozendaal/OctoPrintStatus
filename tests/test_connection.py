@@ -23,3 +23,11 @@ def test_get_all():
         con = Connection("http://localhost", "fake_api_key")
         assert con.get_all() == {'elapsed_time': 'N/A', 'printer_status': 'Printing', 'temp_bed': 70.00,'temp_nozzle': 230.00}
 
+###
+# @patch('connection.Connection.get_job', return_value=(False, {'job': {'averagePrintTime': None, 'estimatedPrintTime': None, 'filament': None, 'file': {'date': None, 'display': None, 'name': None, 'origin': None, 'path': None, 'size': None}, 'lastPrintTime': None, 'user': None}, 'progress': {'completion': None, 'filepos': None, 'printTime': None, 'printTimeLeft': None, 'printTimeLeftOrigin': None}, 'state': 'Operational'})
+#
+# @patch('connection.Connection.get_printer', return_value=(True, {"error": "Printer is not operational"})
+#
+# get_all() must return {'temp_bed': 22.8, 'temp_nozzle': 19.8, 'printer_status': 'Operational', 'printTimeLeft': 'N/A', 'completion': 'N/A'})
+# or
+# {'temp_bed': 'N/A', 'temp_nozzle': 'N/A', 'printer_status': 'Connection Error', 'printTimeLeft': 'N/A', 'completion': 'N/A'}
