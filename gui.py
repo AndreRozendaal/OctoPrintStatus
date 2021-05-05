@@ -1,10 +1,9 @@
 import PySimpleGUI as sg
 
 def gui(con):
-    configfile = "test-octoprint.ini"
     menu_def = [
         ['Edit', ['Configuration'], ],
-        ['view', ['Status Bar'], ],
+        ['view', ['Status Bar', 'Demo Mode'], ],
         ['Help', ['About Octoprint'], ], ]
     WIN_W = 50
     WIN_H = 25
@@ -59,6 +58,12 @@ def gui(con):
                 window['status_bar'].update(visible=False)
                 window['status_bar'].ParentRowFrame.pack_forget()
                 status_bar_switch = True
+        if event == 'Demo Mode':
+            if con.demo_mode:
+                con.demo_mode = False
+            else:
+                con.demo_mode = True
+
         if event == "Configuration":
             print("must implement configuration window")
         if event == "must implement About Octoprint window":

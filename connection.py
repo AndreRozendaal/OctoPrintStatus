@@ -1,5 +1,6 @@
 import requests
 import json
+import random
 
 
 class Connection:
@@ -9,8 +10,11 @@ class Connection:
 
         self.headers = {
             'Content-Type': 'application/json',
-            'X-Api-Key': api_key
-        }
+            'X-Api-Key': api_key}
+
+        self.reset_data()
+        self.demo_mode = False
+        self.demo_phase = 0
 
     def __str__(self):
         return f"url: {self.url}\napi_key: {self.api_key}"
@@ -31,13 +35,29 @@ class Connection:
         return False, json.loads(response)
 
     def get_printer(self):
-        return self.get("/printer")
+        if self.demo_mode:
+            self.demo_phase = self.demo_phase + 1
+            if self.demo_phase > 20: self.demo_phase = 0
+            return False, {"sd": {"ready": "false"}, "state": {"error": "", "flags":
+                {"cancelling": "false", "closedOrError": "false", "error": "false", "finishing": "false",
+                 "operational": "true",
+                 "paused": "false", "pausing": "false", "printing": "false", "ready": "true", "resuming": "false",
+                 "sdReady": "false"},
+                                                        "text": "Operational"},
+                    "temperature": {"bed": {"actual": self.demo_phase + 60 + random.randint(0,3),  "offset": 0, "target": 0.0},
+                                    "tool0": {"actual": self.demo_phase + 180 + random.randint(0,20), "offset": 0, "target": 0.0}}}
+
+        else:
+            return self.get("/printer")
 
     def get_job(self):
-        return self.get("/job")
+        if self.demo_mode:
+            return (False,{'error': '', 'job': {'averagePrintTime': None, 'estimatedPrintTime': None, 'filament': None, 'file': {'date': None, 'display': None, 'name': None, 'origin': None, 'path': None, 'size': None}, 'lastPrintTime': None, 'user': None}, 'progress': {'completion': 10.5555, 'filepos': None, 'printTime': None, 'printTimeLeft': 300, 'printTimeLeftOrigin': None}, 'state': 'Printing'})
+        else:
+            return self.get("/job")
 
-    def get_all(self):
-        data = {
+    def reset_data(self):
+        self.data = {
             "temp_bed": "N/A",
             "temp_nozzle": "N/A",
             "printer_status": "N/A",
@@ -45,38 +65,37 @@ class Connection:
             "completion": "N/A"
         }
 
+    def get_all(self):
+        self.reset_data()
         error, printer = self.get_printer()
         job = self.get_job()
 
-        # printer = self.get("/printer")
-        # if printer.get("error"):
-
         if error:
-            data["printer_status"] = "Connection Error"
+            self.data["printer_status"] = "Connection Error"
         else:
             if printer.get("temperature"):
                 temperature = printer["temperature"]
                 if temperature.get("bed"):
-                    if isinstance(printer["temperature"]["bed"]["actual"], float):  data["temp_bed"]= round(printer["temperature"]["bed"]["actual"], 1)
+                    if isinstance(printer["temperature"]["bed"]["actual"], float):  self.data["temp_bed"]= round(printer["temperature"]["bed"]["actual"], 1)
                     else:
-                        data["temp_bed"] = printer["temperature"]["bed"]["actual"]
+                        self.data["temp_bed"] = printer["temperature"]["bed"]["actual"]
                 if temperature.get("tool0"):
-                    if isinstance(printer["temperature"]["tool0"]["actual"], float):  data["temp_nozzle"] = round(
+                    if isinstance(printer["temperature"]["tool0"]["actual"], float):  self.data["temp_nozzle"] = round(
                         printer["temperature"]["tool0"]["actual"], 1)
                     else:
-                        data["temp_nozzle"] = printer["temperature"]["tool0"]["actual"]
-                data["printer_status"] = "Printer not operational"
+                        self. data["temp_nozzle"] = printer["temperature"]["tool0"]["actual"]
+                self.data["printer_status"] = "Printer not operational"
 
             if job[1].get("progress"):
                 if isinstance(job[1]["progress"]["completion"], float):
-                    data["completion"] = str(round(job[1]["progress"]["completion"],1)) + "%"
+                    self.data["completion"] = str(round(job[1]["progress"]["completion"],1)) + "%"
                 else:
-                    data["completion"] = "N/A"
+                    self.data["completion"] = "N/A"
                 if isinstance(job[1]["progress"]["printTimeLeft"], int):
-                    data["printTimeLeft"] = str(round(job[1]["progress"]["printTimeLeft"]/60)) + " min"
+                    self.data["printTimeLeft"] = str(round(job[1]["progress"]["printTimeLeft"]/60)) + " min"
                 else:
-                    data["printTimeLeft"] = "N/A"
-                data["printer_status"] = job[1]["state"]
+                    self.data["printTimeLeft"] = "N/A"
+                self.data["printer_status"] = job[1]["state"]
 
-        return data
+        return self.data
 
