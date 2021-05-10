@@ -3,3 +3,4 @@ PySimpleGUI
 pytest
 configparser
 mock
+pyinstaller
