@@ -2,8 +2,8 @@
 
 A python GUI program what shows the status of the 3dprinter in octoprint.
 
-![](images/screencapture1.png)
-![](images/screencapture2.png)
+![](https://github.com/AndreRozendaal/OctoPrintStatus/raw/master/images/screencapture1.PNG)
+![](https://github.com/AndreRozendaal/OctoPrintStatus/raw/master/images/screencapture2.PNG)
 
 # TODO
 
