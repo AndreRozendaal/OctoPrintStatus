@@ -19,5 +19,6 @@ A python GUI program what shows the status of the 3dprinter in octoprint.
 
 # Windows executable
 created with: python -m pysimplegui-exemaker.pysimplegui-exemaker
-located: dist/OctoPrintStatus.exe
+located: dist/OctoPrintStatus.exe  # only pointing to my test system, is useful after configuration screen is added
+
 
