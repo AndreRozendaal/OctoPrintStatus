@@ -2,6 +2,9 @@
 
 A python GUI program what shows the status of the 3dprinter in octoprint.
 
+![](images/screencapture1.png)
+![](images/screencapture2.png)
+
 # TODO
 
 - complete pytest, after adding extra method test is broken. must mock two function instead of one
