@@ -66,7 +66,7 @@ class Connection:
         self.data = {
             "temp_bed": "N/A",
             "temp_nozzle": "N/A",
-            "printer_status": "N/A",
+            "printer_status": " ",
             "printTimeLeft": "N/A",
             "completion": "N/A"
         }
