@@ -90,7 +90,6 @@ def gui(con,config):
             url = config.get_url()
             r = configuration_windows(url, api_token)
             if r:
-                print(r)
                 con.update_url(r['url'])
                 con.update_api_token(r['api_token'])
                 config.set_url(r['url'])
