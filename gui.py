@@ -1,10 +1,31 @@
 import PySimpleGUI as sg
 
-def gui(con):
+def configuration_windows(url,apikey):
+    return_dict={}
+    layout = [[sg.Text("Url:")],
+              [sg.InputText(key='url')],
+              [sg.Text("Api key:")],
+              [sg.InputText(key='apikey')],
+              [sg.Submit(), sg.Cancel()]]
+
+    window = sg.Window("Configuration Window", layout, modal=True, finalize=True)
+    window['url'].update(url)
+    window['apikey'].update(apikey)
+    while True:
+        event, values = window.read()
+        if event == "Cancel" or event == sg.WIN_CLOSED:
+            window.close()
+            return False
+            break
+        if event == "Submit":
+            window.close()
+            return {"url": values['url'], "api_token": values['apikey']}
+            break
+
+def gui(con,config):
     menu_def = [
         ['Edit', ['Configuration'], ],
-        ['view', ['Status Bar', 'Demo Mode'], ],
-        ['Help', ['About Octoprint'], ], ]
+        ['view', ['Status Bar', 'Demo Mode'], ]]
     WIN_W = 50
     WIN_H = 25
     interval = 5000
@@ -65,7 +86,19 @@ def gui(con):
                 con.demo_mode = True
 
         if event == "Configuration":
-            print("must implement configuration window")
-        if event == "must implement About Octoprint window":
-            print("about")
+            api_token = config.get_api_token()
+            url = config.get_url()
+            r = configuration_windows(url, api_token)
+            if r:
+                print(r)
+                con.update_url(r['url'])
+                con.update_api_token(r['api_token'])
+                config.set_url(r['url'])
+                config.set_api_token(r['api_token'])
+
+
     window.close()
+
+
+#config.set_url(values['url'])
+#config.set_api_token(values['apikey'])

@@ -16,6 +16,12 @@ class Connection:
         self.demo_mode = False
         self.demo_phase = 0
 
+    def update_url(self, url):
+        self.url = url
+
+    def update_api_token(self,api_key):
+        self.api_key = api_key
+
     def __str__(self):
         return f"url: {self.url}\napi_key: {self.api_key}"
 
