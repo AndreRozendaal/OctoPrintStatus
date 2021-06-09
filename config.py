@@ -2,7 +2,7 @@ import configparser
 
 class Config:
     def __init__(self):
-         self.filename = "octoprintstatus.ini"
+         self.filename = "OctoPrintStatus1.ini"
          self.config = configparser.ConfigParser()
          if not self.configfile_exist():
              self.create_configfile()
